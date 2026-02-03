@@ -6,6 +6,14 @@
   <title>Valentine 💖</title>
 
   <style>
+    :root{
+      --pink:#ff4d88;
+      --pink2:#ff7fb3;
+      --bg1:#ffb6d5;
+      --bg2:#ffd6e8;
+      --ink:#333;
+    }
+
     body {
       margin: 0;
       height: 100vh;
@@ -13,40 +21,92 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #ffb6d5, #ffd6e8);
+      background: radial-gradient(circle at top left, var(--bg2), var(--bg1));
       overflow: hidden;
+      position: relative;
+    }
+
+    /* floating hearts background */
+    .hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      bottom: -40px;
+      font-size: 18px;
+      opacity: 0.6;
+      animation: floatUp linear infinite;
+      filter: blur(0.2px);
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0) translateX(0) rotate(0deg); }
+      to   { transform: translateY(-120vh) translateX(40px) rotate(18deg); }
     }
 
     .card {
-      background: white;
-      padding: 36px;
-      border-radius: 24px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.92);
+      padding: 36px 34px;
+      border-radius: 26px;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.14);
       text-align: center;
-      width: min(520px, 92vw);
+      width: min(560px, 92vw);
       position: relative;
+      border: 2px solid rgba(255,77,136,0.15);
+      backdrop-filter: blur(6px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,77,136,0.10);
+      color: var(--pink);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 14px;
     }
 
     h1 {
       font-size: 34px;
-      margin-bottom: 12px;
-      color: #ff4d88;
+      margin: 6px 0 10px;
+      color: var(--pink);
+      letter-spacing: -0.5px;
     }
 
     p {
       color: #555;
       font-size: 18px;
-      margin-bottom: 28px;
+      margin: 0 0 16px;
+      line-height: 1.35;
     }
 
-    .heart {
-      font-size: 46px;
-      margin-bottom: 10px;
+    .details {
+      margin: 14px auto 22px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,77,136,0.07);
+      color: #444;
+      font-size: 16px;
+      text-align: left;
+      max-width: 440px;
     }
+    .details b { color: var(--pink); }
+    .details a {
+      color: var(--pink);
+      text-decoration: none;
+      font-weight: 650;
+    }
+    .details a:hover { text-decoration: underline; }
 
     .buttons {
       position: relative;
-      height: 80px;
+      height: 86px;
+      margin-top: 10px;
     }
 
     button {
@@ -56,35 +116,75 @@
       font-size: 18px;
       cursor: pointer;
       position: absolute;
-      transition: all 0.25s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, left 0.25s ease, top 0.25s ease;
+      user-select: none;
     }
 
     #yes {
-      background: #ff4d88;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
       color: white;
       left: 50%;
       transform: translateX(-120%);
+      box-shadow: 0 10px 22px rgba(255,77,136,0.28);
     }
+    #yes:hover { transform: translateX(-120%) scale(1.06); }
 
     #no {
       background: #f2f2f2;
+      color: #444;
       left: 50%;
       transform: translateX(20%);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.08);
     }
 
     #message {
-      margin-top: 26px;
+      margin-top: 22px;
       font-size: 20px;
-      color: #ff4d88;
+      color: var(--pink);
+      font-weight: 700;
+      min-height: 28px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: pop 850ms ease-out forwards;
+    }
+    @keyframes pop {
+      0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) rotate(260deg) scale(0.9); opacity: 0; }
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #777;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <div class="heart">💘</div>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card" id="card">
+    <div class="badge">💌 Valentine Invitation</div>
     <h1>Will you be my Valentine, Cynthia?</h1>
-    <p>I have a very strong feeling about the answer 😊</p>
+    <p>I planned a sweet little night for us 😊</p>
+
+    <div class="details">
+      <div>📍 <b>Boulevard SF</b></div>
+      <div>🗓️ <b>February 14th</b></div>
+      <div style="margin-top:8px;">
+        <a href="https://www.google.com/maps/search/?api=1&query=Boulevard+San+Francisco" target="_blank" rel="noopener noreferrer">
+          Open in Google Maps →
+        </a>
+      </div>
+    </div>
 
     <div class="buttons">
       <button id="yes">Yes 💖</button>
@@ -92,32 +192,87 @@
     </div>
 
     <div id="message"></div>
+    <div class="footer">p.s. the “No” button is shy 🙈</div>
   </div>
 
   <script>
+    // Floating hearts generator
+    const heartsEl = document.getElementById("hearts");
+    const heartChars = ["💗","💖","💘","💓","💕","💞"];
+    function spawnHeart() {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (6 + Math.random() * 7) + "s";
+      h.style.fontSize = (14 + Math.random() * 22) + "px";
+      h.style.opacity = (0.35 + Math.random() * 0.45);
+      heartsEl.appendChild(h);
+      setTimeout(() => h.remove(), 14000);
+    }
+    setInterval(spawnHeart, 350);
+    for (let i = 0; i < 10; i++) setTimeout(spawnHeart, i * 120);
+
+    // Buttons logic
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
     const message = document.getElementById("message");
-    const card = document.querySelector(".card");
+    const card = document.getElementById("card");
 
-    noBtn.addEventListener("mouseenter", () => {
+    // Make "No" dodge cursor (and taps) so it "won't let her do it"
+    function moveNoButton() {
       const cardRect = card.getBoundingClientRect();
-      const maxX = cardRect.width - noBtn.offsetWidth;
-      const maxY = cardRect.height - noBtn.offsetHeight;
+      const padding = 14;
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+      const maxX = cardRect.width - noBtn.offsetWidth - padding;
+      const maxY = cardRect.height - noBtn.offsetHeight - padding;
 
+      const randomX = padding + Math.random() * maxX;
+      const randomY = Math.max(140, padding + Math.random() * (maxY - 140)); // keep it below header
+
+      // Place relative to card
       noBtn.style.left = `${randomX}px`;
       noBtn.style.top = `${randomY}px`;
-    });
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); moveNoButton(); });
+
+    // Confetti burst when she clicks yes
+    function confettiBurst() {
+      const colors = ["#ff4d88","#ff7fb3","#ffd6e8","#ffb6d5","#ffffff"];
+      const rect = card.getBoundingClientRect();
+      const originX = rect.width / 2;
+      const originY = 40;
+
+      for (let i = 0; i < 60; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.left = originX + "px";
+        c.style.top = originY + "px";
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 80 + Math.random() * 160;
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance + 120;
+
+        c.style.setProperty("--dx", dx + "px");
+        c.style.setProperty("--dy", dy + "px");
+
+        card.appendChild(c);
+        setTimeout(() => c.remove(), 900);
+      }
+    }
 
     yesBtn.addEventListener("click", () => {
-      message.innerHTML = "YAY!!! 🎉💖 I can’t wait to be your Valentine.";
+      message.innerHTML = "YAYYYYY!! 🎉💖 See you at Boulevard on Feb 14th 😘";
       noBtn.style.display = "none";
-      yesBtn.style.transform = "scale(1.15)";
+      yesBtn.style.transform = "translateX(-120%) scale(1.12)";
+      confettiBurst();
     });
   </script>
 
 </body>
 </html>
+
